@@ -1,6 +1,5 @@
 using System.IO;
 using System.Xml.Linq;
-using AnaliseDemonstrativoTISS.Operadoras;
 
 namespace AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
 
@@ -46,7 +45,7 @@ public sealed class AnaliseXml
             var dadosGuia = ExtrairDadosGuia(guia);
             if (!UtilitariosDeAnalise.PassaFiltro(
                     filtros,
-                    ObterValorCampoFiltro(campoFiltro, dadosGuia.Credencial, dadosGuia.Nome, dadosGuia.Senha)))
+                    ObterValorCampoFiltro(campoFiltro, dadosGuia.Credencial, dadosGuia.Senha)))
             {
                 continue;
             }
@@ -147,13 +146,11 @@ public sealed class AnaliseXml
     private static string ObterValorCampoFiltro(
         CampoFiltroSulamerica campoFiltro,
         string credencial,
-        string nome,
         string senha)
     {
         return campoFiltro switch
         {
             CampoFiltroSulamerica.Credencial => credencial,
-            CampoFiltroSulamerica.Nome => nome,
             CampoFiltroSulamerica.Senha => senha,
             _ => string.Empty
         };
