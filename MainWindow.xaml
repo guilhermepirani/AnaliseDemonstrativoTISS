@@ -21,7 +21,7 @@
                            FontSize="24"
                            FontWeight="Bold"
                            Foreground="#0F172A" />
-                <TextBlock Text="Selecione a operadora, o arquivo XML e execute a busca para visualizar os dados em formato legível."
+                <TextBlock Text="Selecione a operadora, o arquivo e execute a busca para visualizar os dados em formato legível."
                            Margin="0,6,0,0"
                            Foreground="{StaticResource MutedTextBrush}" />
             </StackPanel>
@@ -56,7 +56,8 @@
                               MinHeight="36"
                               SelectedIndex="0"
                               Margin="0,0,0,12"
-                              Style="{StaticResource InputComboBoxStyle}">
+                              Style="{StaticResource InputComboBoxStyle}"
+                              SelectionChanged="OperadoraComboBox_SelectionChanged">
                         <ComboBoxItem Content="Amil" />
                         <ComboBoxItem Content="Cabesp" />
                         <ComboBoxItem Content="Caixa de Cubatão" />
@@ -69,7 +70,7 @@
                     </ComboBox>
 
                     <TextBlock Grid.Row="2"
-                               Text="Arquivo XML"
+                               Text="Arquivo"
                                Style="{StaticResource FieldLabelStyle}" />
 
                     <Button Grid.Row="3"
@@ -89,11 +90,7 @@
                               MinHeight="36"
                               SelectedIndex="0"
                               Margin="0,0,0,12"
-                              Style="{StaticResource InputComboBoxStyle}">
-                        <ComboBoxItem Content="Credencial" />
-                        <ComboBoxItem Content="Nome" />
-                        <ComboBoxItem Content="Senha" />
-                    </ComboBox>
+                              Style="{StaticResource InputComboBoxStyle}" />
 
                     <TextBlock Grid.Row="6"
                                Text="Dados para filtragem"
@@ -109,7 +106,7 @@
                              HorizontalScrollBarVisibility="Auto" />
 
                     <StackPanel Grid.Row="8" VerticalAlignment="Top">
-                        <TextBlock Text="Você pode informar um ou vários filtros na mesma execução."
+                        <TextBlock Text="Você pode informar um ou vários filtros na mesma execução, um em cada linha."
                                    Foreground="{StaticResource MutedTextBrush}"
                                    TextWrapping="Wrap"
                                    Margin="0,0,0,10" />

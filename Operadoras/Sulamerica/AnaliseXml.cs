@@ -1,35 +1,8 @@
-using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
+using AnaliseDemonstrativoTISS.Operadoras;
 
 namespace AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
-
-public enum CampoFiltroSulamerica
-{
-    Credencial,
-    Nome,
-    Senha
-}
-
-public sealed class RegistroAnaliseSulamerica
-{
-    public string Credencial { get; init; } = string.Empty;
-    public string Nome { get; init; } = string.Empty;
-    public string Senha { get; init; } = string.Empty;
-    public string NumeroGuiaPrestador { get; init; } = string.Empty;
-    public string NumeroGuiaOperadora { get; init; } = string.Empty;
-    public string DataAtendimento { get; init; } = string.Empty;
-    public string CodigoProcedimento { get; init; } = string.Empty;
-    public string DescricaoProcedimento { get; init; } = string.Empty;
-    public string Quantidade { get; init; } = string.Empty;
-    public string ValorInformado { get; init; } = string.Empty;
-    public string ValorProcessado { get; init; } = string.Empty;
-    public string ValorLiberado { get; init; } = string.Empty;
-    public string ValorGlosa { get; init; } = string.Empty;
-    public string SituacaoGuia { get; init; } = string.Empty;
-    public string CodigoGlosa { get; init; } = string.Empty;
-    public string DescricaoGlosa { get; init; } = string.Empty;
-}
 
 public sealed class AnaliseXml
 {
@@ -63,10 +36,7 @@ public sealed class AnaliseXml
             throw new FileNotFoundException("Arquivo XML não encontrado.", caminhoXml);
         }
 
-        var filtros = (valoresFiltro ?? [])
-            .Select(Normalizar)
-            .Where(static valor => !string.IsNullOrWhiteSpace(valor))
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var filtros = UtilitariosDeAnalise.CriarFiltros(valoresFiltro);
 
         var documento = XDocument.Load(caminhoXml, LoadOptions.None);
         var resultado = new List<RegistroAnaliseSulamerica>();
@@ -74,7 +44,9 @@ public sealed class AnaliseXml
         foreach (var guia in ObterGuias(documento))
         {
             var dadosGuia = ExtrairDadosGuia(guia);
-            if (!PassaFiltro(campoFiltro, filtros, dadosGuia.Credencial, dadosGuia.Nome, dadosGuia.Senha))
+            if (!UtilitariosDeAnalise.PassaFiltro(
+                    filtros,
+                    ObterValorCampoFiltro(campoFiltro, dadosGuia.Credencial, dadosGuia.Nome, dadosGuia.Senha)))
             {
                 continue;
             }
@@ -104,10 +76,10 @@ public sealed class AnaliseXml
             NumeroGuiaPrestador: BuscarPrimeiroValor(guia, "numeroGuiaPrestador"),
             NumeroGuiaOperadora: BuscarPrimeiroValor(guia, "numeroGuiaOperadora"),
             DataAtendimento: BuscarPrimeiroValor(guia, TagsDataAtendimento),
-            ValorInformado: FormatarValor(BuscarPrimeiroValor(guia, TagsValorInformadoGuia)),
-            ValorProcessado: FormatarValor(BuscarPrimeiroValor(guia, TagsValorProcessadoGuia)),
-            ValorLiberado: FormatarValor(BuscarPrimeiroValor(guia, TagsValorLiberadoGuia)),
-            ValorGlosa: FormatarValor(BuscarPrimeiroValor(guia, TagsValorGlosaGuia)),
+            ValorInformado: UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorInformadoGuia)),
+            ValorProcessado: UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorProcessadoGuia)),
+            ValorLiberado: UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorLiberadoGuia)),
+            ValorGlosa: UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorGlosaGuia)),
             SituacaoGuia: BuscarPrimeiroValor(guia, "situacaoGuia"),
             CodigoGlosa: BuscarPrimeiroValor(guia, "codigoGlosa"),
             DescricaoGlosa: BuscarPrimeiroValor(guia, "descricaoGlosa"));
@@ -146,7 +118,7 @@ public sealed class AnaliseXml
             CodigoProcedimento = BuscarPrimeiroValor(procedimento, TagsCodigoProcedimento),
             DescricaoProcedimento = BuscarPrimeiroValor(procedimento, TagsDescricaoProcedimento),
             Quantidade = BuscarPrimeiroValor(procedimento, TagsQuantidadeProcedimento),
-            ValorInformado = FormatarValor(BuscarPrimeiroValor(procedimento, TagsValorInformadoProcedimento)),
+            ValorInformado = UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(procedimento, TagsValorInformadoProcedimento)),
             ValorProcessado = dadosGuia.ValorProcessado,
             ValorLiberado = dadosGuia.ValorLiberado,
             ValorGlosa = dadosGuia.ValorGlosa,
@@ -172,27 +144,19 @@ public sealed class AnaliseXml
         return guia.Descendants().Where(static elemento => NomeEh(elemento, "procedimentoExecutado"));
     }
 
-    private static bool PassaFiltro(
+    private static string ObterValorCampoFiltro(
         CampoFiltroSulamerica campoFiltro,
-        HashSet<string> filtros,
         string credencial,
         string nome,
         string senha)
     {
-        if (filtros.Count == 0)
+        return campoFiltro switch
         {
-            return true;
-        }
-
-        var valor = campoFiltro switch
-        {
-            CampoFiltroSulamerica.Credencial => Normalizar(credencial),
-            CampoFiltroSulamerica.Nome => Normalizar(nome),
-            CampoFiltroSulamerica.Senha => Normalizar(senha),
+            CampoFiltroSulamerica.Credencial => credencial,
+            CampoFiltroSulamerica.Nome => nome,
+            CampoFiltroSulamerica.Senha => senha,
             _ => string.Empty
         };
-
-        return filtros.Contains(valor);
     }
 
     private static string BuscarPrimeiroValor(XElement origem, params string[] nomes)
@@ -221,26 +185,6 @@ public sealed class AnaliseXml
     private static bool NomeEh(XElement elemento, string nome)
     {
         return string.Equals(elemento.Name.LocalName, nome, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string Normalizar(string valor)
-    {
-        return valor.Trim();
-    }
-
-    private static string FormatarValor(string valorBruto)
-    {
-        if (decimal.TryParse(valorBruto, NumberStyles.Any, CultureInfo.InvariantCulture, out var valorInvariante))
-        {
-            return valorInvariante.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"));
-        }
-
-        if (decimal.TryParse(valorBruto, NumberStyles.Any, CultureInfo.GetCultureInfo("pt-BR"), out var valorPtBr))
-        {
-            return valorPtBr.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"));
-        }
-
-        return valorBruto;
     }
 
     private readonly record struct DadosGuia(
