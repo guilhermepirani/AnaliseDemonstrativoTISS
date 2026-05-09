@@ -94,11 +94,107 @@
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="#D4DBE8" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="GridLinesVisibility" Value="All" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E5E7EB" />
+            <Setter Property="VerticalGridLinesBrush" Value="#E5E7EB" />
             <Setter Property="RowBackground" Value="White" />
             <Setter Property="AlternatingRowBackground" Value="#F8FAFC" />
             <Setter Property="RowHeaderWidth" Value="0" />
             <Setter Property="ColumnHeaderHeight" Value="34" />
+            <Setter Property="CanUserReorderColumns" Value="True" />
+            <Setter Property="CanUserResizeColumns" Value="True" />
+            <Setter Property="CanUserSortColumns" Value="False" />
+            <Setter Property="SelectionMode" Value="Extended" />
+            <Setter Property="SelectionUnit" Value="CellOrRowHeader" />
+            <Setter Property="ClipboardCopyMode" Value="ExcludeHeader" />
+            <Setter Property="CellStyle" Value="{DynamicResource ResultDataGridCellStyle}" />
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ResultDataGridHeaderStyle}" />
+            <Setter Property="RowStyle" Value="{DynamicResource ResultDataGridRowStyle}" />
+        </Style>
+
+        <Style x:Key="ResultDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#EEF2FF" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="6,8" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="#DBE5F3" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <Style x:Key="ResultDataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="6,7" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DBEAFE" />
+                    <Setter Property="Foreground" Value="#0F172A" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CenteredDataGridTextStyle" TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4,0" />
+        </Style>
+
+        <Style x:Key="LeftAlignedDataGridTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CenteredDataGridTextStyle}">
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="6,0,4,0" />
+        </Style>
+
+        <Style x:Key="LeftAlignedDataGridHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource ResultDataGridHeaderStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+
+        <Style x:Key="LeftAlignedDataGridCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource ResultDataGridCellStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+        </Style>
+
+        <Style x:Key="ResultDataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EFF6FF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ColumnVisibilityCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Background" Value="#F8FAFC" />
+            <Setter Property="BorderBrush" Value="#D5DFEE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="ColumnExpanderStyle" TargetType="Expander">
+            <Setter Property="Background" Value="#F8FAFC" />
+            <Setter Property="BorderBrush" Value="#D5DFEE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,8" />
+        </Style>
+
+        <Style x:Key="HeaderMenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#EEF2FF" />
+            <Setter Property="BorderBrush" Value="#DBE5F3" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E0E7FF" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Application.Resources>
 </Application>
