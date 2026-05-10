@@ -15,7 +15,6 @@ public class RegistroAnalise
     public string ValorProcessado { get; init; } = string.Empty;
     public string ValorLiberado { get; init; } = string.Empty;
     public string ValorGlosa { get; init; } = string.Empty;
-    public string SituacaoGuia { get; init; } = string.Empty;
     public string CodigoGlosa { get; init; } = string.Empty;
     public string DescricaoGlosa { get; init; } = string.Empty;
 }
