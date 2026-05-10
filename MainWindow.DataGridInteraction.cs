@@ -401,6 +401,42 @@ public partial class MainWindow
         copiarMenuItem.Click += (_, _) => CopiarTodosDados();
         menu.Items.Add(copiarMenuItem);
 
+        var colunasDados = ResultDataGrid.Columns
+            .OfType<DataGridBoundColumn>()
+            .Select(coluna => new
+            {
+                Coluna = coluna,
+                Titulo = coluna.Header?.ToString() ?? string.Empty
+            })
+            .Where(item => !string.IsNullOrWhiteSpace(item.Titulo))
+            .OrderBy(item => item.Coluna.DisplayIndex)
+            .ToList();
+
+        if (colunasDados.Count > 0)
+        {
+            menu.Items.Add(new Separator());
+
+            foreach (var item in colunasDados)
+            {
+                var toggleColunaMenuItem = new MenuItem
+                {
+                    Header = item.Titulo,
+                    IsCheckable = true,
+                    StaysOpenOnClick = true,
+                    IsChecked = item.Coluna.Visibility == Visibility.Visible
+                };
+
+                toggleColunaMenuItem.Click += (_, _) =>
+                {
+                    item.Coluna.Visibility = toggleColunaMenuItem.IsChecked
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                };
+
+                menu.Items.Add(toggleColunaMenuItem);
+            }
+        }
+
         botao.ContextMenu = menu;
         menu.PlacementTarget = botao;
         menu.Placement = PlacementMode.Bottom;

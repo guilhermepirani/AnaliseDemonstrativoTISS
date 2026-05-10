@@ -24,10 +24,10 @@ public partial class MainWindow
     private static readonly Dictionary<string, IReadOnlyList<string>> CamposFiltroPorOperadora =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            [OperadoraSulamerica] = Enum.GetNames<CampoFiltroSulamerica>(),
-            [OperadoraPetrobras] = Enum.GetNames<CampoFiltroPetrobras>(),
-            [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>(),
-            [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>()
+            [OperadoraSulamerica] = Enum.GetNames<CampoFiltroSulamerica>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
+            [OperadoraPetrobras] = Enum.GetNames<CampoFiltroPetrobras>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
+            [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
+            [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray()
         };
 
     private readonly AnaliseXmlSulamerica _analisadorSulamerica = new();
