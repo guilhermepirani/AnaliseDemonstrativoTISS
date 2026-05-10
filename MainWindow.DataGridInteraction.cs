@@ -133,6 +133,11 @@ public partial class MainWindow
             return;
         }
 
+        if (ObterAncestor<Thumb>(source) is not null)
+        {
+            return;
+        }
+
         var colunaCabecalho = ObterAncestor<DataGridColumnHeader>(source);
         if (colunaCabecalho?.Column is null)
         {
