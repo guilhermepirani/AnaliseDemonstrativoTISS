@@ -35,7 +35,7 @@ public sealed class AnaliseXml
         }
 
         var filtros = UtilitariosDeAnalise.CriarFiltros(valoresFiltro);
-        var documento = XDocument.Load(caminhoXml, LoadOptions.None);
+        var documento = UtilitariosDeAnalise.CarregarDocumentoXml(caminhoXml);
         var resultado = new List<RegistroAnaliseCxCubatao>();
 
         foreach (var guia in ObterGuias(documento))
