@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AnaliseDemonstrativoTISS.Operadoras;
 using AnaliseDemonstrativoTISS.Operadoras.Amil;
+using AnaliseDemonstrativoTISS.Operadoras.Cabesp;
 using AnaliseDemonstrativoTISS.Operadoras.CaixaDeCubatao;
 using AnaliseDemonstrativoTISS.Operadoras.Petrobras;
 using AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
@@ -19,6 +20,7 @@ public partial class MainWindow
     private const string OperadoraSulamerica = "Sulamerica";
     private const string OperadoraPetrobras = "Petrobras";
     private const string OperadoraAmil = "Amil";
+    private const string OperadoraCabesp = "Cabesp";
     private const string OperadoraCaixaCubatao = "Caixa de Cubatão";
 
     private static readonly Dictionary<string, IReadOnlyList<string>> CamposFiltroPorOperadora =
@@ -27,12 +29,14 @@ public partial class MainWindow
             [OperadoraSulamerica] = Enum.GetNames<CampoFiltroSulamerica>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
             [OperadoraPetrobras] = Enum.GetNames<CampoFiltroPetrobras>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
             [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
+            [OperadoraCabesp] = Enum.GetNames<CampoFiltroCabesp>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
             [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray()
         };
 
     private readonly AnaliseXmlSulamerica _analisadorSulamerica = new();
     private readonly Operadoras.Petrobras.AnaliseXml _analisadorPetrobras = new();
     private readonly AnaliseCsv _analisadorAmil = new();
+    private readonly Operadoras.Cabesp.AnaliseXml _analisadorCabesp = new();
     private readonly Operadoras.CaixaDeCubatao.AnaliseXml _analisadorCaixaCubatao = new();
     private IReadOnlyList<string> _arquivosSelecionados = [];
 
@@ -142,12 +146,17 @@ public partial class MainWindow
             return _analisadorAmil.Analisar(arquivo, ObterCampoFiltro(CampoFiltroAmil.Credencial), valoresFiltro);
         }
 
+        if (string.Equals(operadora, OperadoraCabesp, StringComparison.OrdinalIgnoreCase))
+        {
+            return _analisadorCabesp.Analisar(arquivo, ObterCampoFiltro(CampoFiltroCabesp.Credencial), valoresFiltro);
+        }
+
         if (string.Equals(operadora, OperadoraCaixaCubatao, StringComparison.OrdinalIgnoreCase))
         {
             return _analisadorCaixaCubatao.Analisar(arquivo, ObterCampoFiltro(CampoFiltroCaixaCubatao.Credencial), valoresFiltro);
         }
 
-        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil} e {OperadoraCaixaCubatao}.");
+        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil}, {OperadoraCabesp} e {OperadoraCaixaCubatao}.");
     }
 
     private static string ObterDescricaoArquivosSelecionados(IReadOnlyList<string> arquivosSelecionados)

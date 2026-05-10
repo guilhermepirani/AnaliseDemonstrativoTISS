@@ -1,4 +1,8 @@
 using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using System.Windows.Data;
 
 namespace AnaliseDemonstrativoTISS.Operadoras;
@@ -6,6 +10,7 @@ namespace AnaliseDemonstrativoTISS.Operadoras;
 public static class UtilitariosDeAnalise
 {
     private static readonly CultureInfo CulturaPtBr = CultureInfo.GetCultureInfo("pt-BR");
+    private static readonly Encoding EncodingFallback = Encoding.Latin1;
 
     public static HashSet<string> CriarFiltros(IEnumerable<string>? valoresFiltro)
     {
@@ -82,6 +87,21 @@ public static class UtilitariosDeAnalise
         }
 
         return valorBruto;
+    }
+
+    public static XDocument CarregarDocumentoXml(string caminhoXml)
+    {
+        try
+        {
+            return XDocument.Load(caminhoXml, LoadOptions.None);
+        }
+        catch (Exception ex) when (ex is DecoderFallbackException or XmlException)
+        {
+            using var stream = File.OpenRead(caminhoXml);
+            using var streamReader = new StreamReader(stream, EncodingFallback, detectEncodingFromByteOrderMarks: true);
+            using var xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit });
+            return XDocument.Load(xmlReader, LoadOptions.None);
+        }
     }
 }
 
