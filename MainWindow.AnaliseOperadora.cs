@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AnaliseDemonstrativoTISS.Operadoras;
 using AnaliseDemonstrativoTISS.Operadoras.Amil;
+using AnaliseDemonstrativoTISS.Operadoras.CaixaDeCubatao;
 using AnaliseDemonstrativoTISS.Operadoras.Petrobras;
 using AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
 using AnaliseXmlSulamerica = AnaliseDemonstrativoTISS.Operadoras.Sulamerica.AnaliseXml;
@@ -18,18 +19,21 @@ public partial class MainWindow
     private const string OperadoraSulamerica = "Sulamerica";
     private const string OperadoraPetrobras = "Petrobras";
     private const string OperadoraAmil = "Amil";
+    private const string OperadoraCaixaCubatao = "Caixa de Cubatão";
 
     private static readonly Dictionary<string, IReadOnlyList<string>> CamposFiltroPorOperadora =
         new(StringComparer.OrdinalIgnoreCase)
         {
             [OperadoraSulamerica] = Enum.GetNames<CampoFiltroSulamerica>(),
             [OperadoraPetrobras] = Enum.GetNames<CampoFiltroPetrobras>(),
-            [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>()
+            [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>(),
+            [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>()
         };
 
     private readonly AnaliseXmlSulamerica _analisadorSulamerica = new();
     private readonly Operadoras.Petrobras.AnaliseXml _analisadorPetrobras = new();
     private readonly AnaliseCsv _analisadorAmil = new();
+    private readonly Operadoras.CaixaDeCubatao.AnaliseXml _analisadorCaixaCubatao = new();
     private string _arquivoSelecionado = string.Empty;
 
     private void OperadoraComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -118,7 +122,12 @@ public partial class MainWindow
             return _analisadorAmil.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroAmil.Credencial), valoresFiltro);
         }
 
-        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras} e {OperadoraAmil}.");
+        if (string.Equals(operadora, OperadoraCaixaCubatao, StringComparison.OrdinalIgnoreCase))
+        {
+            return _analisadorCaixaCubatao.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroCaixaCubatao.Credencial), valoresFiltro);
+        }
+
+        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil} e {OperadoraCaixaCubatao}.");
     }
 
     private bool UsaCsv(string operadora)

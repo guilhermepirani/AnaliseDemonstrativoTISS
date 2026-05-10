@@ -5,7 +5,6 @@ using System.Windows.Data;
 using AnaliseDemonstrativoTISS.Operadoras;
 using AnaliseDemonstrativoTISS.Operadoras.Amil;
 using AnaliseDemonstrativoTISS.Operadoras.Petrobras;
-using AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
 
 namespace AnaliseDemonstrativoTISS;
 
@@ -29,7 +28,7 @@ public partial class MainWindow
             [nameof(RegistroAnalise.ValorGlosa)] = static r => r.ValorGlosa,
             [nameof(RegistroAnalise.CodigoGlosa)] = static r => r.CodigoGlosa,
             [nameof(RegistroAnalise.DescricaoGlosa)] = static r => r.DescricaoGlosa,
-            [nameof(RegistroAnaliseSulamerica.SituacaoGuia)] = static r => r is RegistroAnaliseSulamerica sulamerica ? sulamerica.SituacaoGuia : string.Empty,
+            [nameof(RegistroAnalise.SituacaoGuia)] = static r => r.SituacaoGuia,
             [nameof(RegistroAnalisePetrobras.TipoPagamento)] = static r => r is RegistroAnalisePetrobras petrobras ? petrobras.TipoPagamento : string.Empty,
             [nameof(RegistroAnaliseAmil.CodigoGlosaAmil)] = static r => r is RegistroAnaliseAmil amil ? amil.CodigoGlosaAmil : string.Empty,
             [nameof(RegistroAnaliseAmil.DescricaoGlosaAmil)] = static r => r is RegistroAnaliseAmil amil ? amil.DescricaoGlosaAmil : string.Empty
@@ -52,7 +51,7 @@ public partial class MainWindow
         [nameof(RegistroAnalise.ValorGlosa)] = 12,
         [nameof(RegistroAnalise.CodigoGlosa)] = 13,
         [nameof(RegistroAnalise.DescricaoGlosa)] = 14,
-        [nameof(RegistroAnaliseSulamerica.SituacaoGuia)] = 15,
+        [nameof(RegistroAnalise.SituacaoGuia)] = 15,
         [nameof(RegistroAnalisePetrobras.TipoPagamento)] = 15,
         [nameof(RegistroAnaliseAmil.CodigoGlosaAmil)] = 15,
         [nameof(RegistroAnaliseAmil.DescricaoGlosaAmil)] = 16
