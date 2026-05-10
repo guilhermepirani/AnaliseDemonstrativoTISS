@@ -53,7 +53,7 @@ public sealed class AnaliseXml
             Senha = BuscarPrimeiroValor(guia, "senha"),
             NumeroGuiaPrestador = BuscarPrimeiroValor(guia, "numeroGuiaPrestador"),
             NumeroGuiaOperadora = BuscarPrimeiroValor(guia, "numeroGuiaOperadora"),
-            DataAtendimento = BuscarPrimeiroValor(guia, TagsDataAtendimento),
+            DataAtendimento = UtilitariosDeAnalise.FormatarDataPadrao(BuscarPrimeiroValor(guia, TagsDataAtendimento)),
             ValorInformado = UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorInformado)),
             ValorProcessado = UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorProcessado)),
             ValorLiberado = UtilitariosDeAnalise.FormatarValorMonetario(BuscarPrimeiroValor(guia, TagsValorLiberado)),

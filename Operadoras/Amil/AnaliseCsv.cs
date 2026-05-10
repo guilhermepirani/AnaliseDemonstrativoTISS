@@ -178,7 +178,7 @@ public sealed class AnaliseCsv
             Nome = ObterValorColuna(colunas, indiceColunas, AliasNome),
             NumeroGuiaPrestador = ObterValorColuna(colunas, indiceColunas, AliasNumeroGuiaPrestador),
             NumeroGuiaOperadora = ObterValorColuna(colunas, indiceColunas, AliasNumeroGuiaOperadora),
-            DataAtendimento = ObterValorColuna(colunas, indiceColunas, AliasDataAtendimento),
+            DataAtendimento = UtilitariosDeAnalise.FormatarDataPadrao(ObterValorColuna(colunas, indiceColunas, AliasDataAtendimento)),
             CodigoProcedimento = LimparCodigoProcedimento(ObterValorColuna(colunas, indiceColunas, AliasCodigoProcedimento)),
             DescricaoProcedimento = ObterValorColuna(colunas, indiceColunas, AliasDescricaoProcedimento),
             Quantidade = ObterValorColuna(colunas, indiceColunas, AliasQuantidade),

@@ -11,6 +11,33 @@ public static class UtilitariosDeAnalise
 {
     private static readonly CultureInfo CulturaPtBr = CultureInfo.GetCultureInfo("pt-BR");
     private static readonly Encoding EncodingFallback = Encoding.Latin1;
+    private static readonly string[] FormatosDataDiaMes =
+    [
+        "yyyy-MM-dd",
+        "yyyy-MM-ddTHH:mm:ss",
+        "yyyy-MM-ddTHH:mm:ss.FFFFFFFK",
+        "yyyy-MM-dd HH:mm:ss",
+        "dd/MM/yyyy",
+        "d/M/yyyy",
+        "MM/dd/yyyy",
+        "M/d/yyyy",
+        "dd-MM-yyyy",
+        "MM-dd-yyyy"
+    ];
+
+    private static readonly string[] FormatosDataMesDia =
+    [
+        "yyyy-MM-dd",
+        "yyyy-MM-ddTHH:mm:ss",
+        "yyyy-MM-ddTHH:mm:ss.FFFFFFFK",
+        "yyyy-MM-dd HH:mm:ss",
+        "MM/dd/yyyy",
+        "M/d/yyyy",
+        "dd/MM/yyyy",
+        "d/M/yyyy",
+        "MM-dd-yyyy",
+        "dd-MM-yyyy"
+    ];
 
     public static HashSet<string> CriarFiltros(IEnumerable<string>? valoresFiltro)
     {
@@ -84,6 +111,45 @@ public static class UtilitariosDeAnalise
         if (decimal.TryParse(valorNormalizado, NumberStyles.Any, CultureInfo.InvariantCulture, out var valorInvariante))
         {
             return valorInvariante.ToString("N2", CulturaPtBr);
+        }
+
+        return valorBruto;
+    }
+
+    public static string FormatarDataPadrao(string valorBruto, bool mesPrimeiro = false)
+    {
+        var valorNormalizado = valorBruto.Trim();
+        if (string.IsNullOrWhiteSpace(valorNormalizado))
+        {
+            return valorBruto;
+        }
+
+        var formatos = mesPrimeiro ? FormatosDataMesDia : FormatosDataDiaMes;
+
+        if (DateTime.TryParseExact(
+                valorNormalizado,
+                formatos,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces,
+                out var data)
+            || DateTime.TryParseExact(
+                valorNormalizado,
+                formatos,
+                CulturaPtBr,
+                DateTimeStyles.AllowWhiteSpaces,
+                out data)
+            || DateTime.TryParse(
+                valorNormalizado,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces,
+                out data)
+            || DateTime.TryParse(
+                valorNormalizado,
+                CulturaPtBr,
+                DateTimeStyles.AllowWhiteSpaces,
+                out data))
+        {
+            return data.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
 
         return valorBruto;

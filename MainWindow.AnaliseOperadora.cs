@@ -7,6 +7,7 @@ using AnaliseDemonstrativoTISS.Operadoras;
 using AnaliseDemonstrativoTISS.Operadoras.Amil;
 using AnaliseDemonstrativoTISS.Operadoras.Cabesp;
 using AnaliseDemonstrativoTISS.Operadoras.CaixaDeCubatao;
+using AnaliseDemonstrativoTISS.Operadoras.Geap;
 using AnaliseDemonstrativoTISS.Operadoras.Petrobras;
 using AnaliseDemonstrativoTISS.Operadoras.Sulamerica;
 using AnaliseXmlSulamerica = AnaliseDemonstrativoTISS.Operadoras.Sulamerica.AnaliseXml;
@@ -22,6 +23,7 @@ public partial class MainWindow
     private const string OperadoraAmil = "Amil";
     private const string OperadoraCabesp = "Cabesp";
     private const string OperadoraCaixaCubatao = "Caixa de Cubatão";
+    private const string OperadoraGeap = "Geap";
 
     private static readonly Dictionary<string, IReadOnlyList<string>> CamposFiltroPorOperadora =
         new(StringComparer.OrdinalIgnoreCase)
@@ -30,7 +32,8 @@ public partial class MainWindow
             [OperadoraPetrobras] = Enum.GetNames<CampoFiltroPetrobras>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
             [OperadoraAmil] = Enum.GetNames<CampoFiltroAmil>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
             [OperadoraCabesp] = Enum.GetNames<CampoFiltroCabesp>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
-            [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray()
+            [OperadoraCaixaCubatao] = Enum.GetNames<CampoFiltroCaixaCubatao>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray(),
+            [OperadoraGeap] = Enum.GetNames<CampoFiltroGeap>().OrderBy(campo => campo, StringComparer.CurrentCultureIgnoreCase).ToArray()
         };
 
     private readonly AnaliseXmlSulamerica _analisadorSulamerica = new();
@@ -38,6 +41,7 @@ public partial class MainWindow
     private readonly AnaliseCsv _analisadorAmil = new();
     private readonly Operadoras.Cabesp.AnaliseXml _analisadorCabesp = new();
     private readonly Operadoras.CaixaDeCubatao.AnaliseXml _analisadorCaixaCubatao = new();
+    private readonly Operadoras.Geap.AnaliseXml _analisadorGeap = new();
     private IReadOnlyList<string> _arquivosSelecionados = [];
 
     private void OperadoraComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -156,7 +160,12 @@ public partial class MainWindow
             return _analisadorCaixaCubatao.Analisar(arquivo, ObterCampoFiltro(CampoFiltroCaixaCubatao.Credencial), valoresFiltro);
         }
 
-        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil}, {OperadoraCabesp} e {OperadoraCaixaCubatao}.");
+        if (string.Equals(operadora, OperadoraGeap, StringComparison.OrdinalIgnoreCase))
+        {
+            return _analisadorGeap.Analisar(arquivo, ObterCampoFiltro(CampoFiltroGeap.Credencial), valoresFiltro);
+        }
+
+        throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil}, {OperadoraCabesp}, {OperadoraCaixaCubatao} e {OperadoraGeap}.");
     }
 
     private static string ObterDescricaoArquivosSelecionados(IReadOnlyList<string> arquivosSelecionados)
