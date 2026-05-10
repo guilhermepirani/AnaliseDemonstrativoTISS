@@ -30,6 +30,38 @@
             <Setter Property="Background" Value="#FAFCFF" />
             <Setter Property="BorderBrush" Value="#C8D4E8" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Margin="{TemplateBinding Padding}" />
+                                <TextBlock x:Name="PlaceholderText"
+                                           Margin="{TemplateBinding Padding}"
+                                           Text="{TemplateBinding Tag}"
+                                           Foreground="{StaticResource MutedTextBrush}"
+                                           Opacity="0.85"
+                                           Visibility="Collapsed"
+                                           IsHitTestVisible="False" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value="" />
+                                    <Condition Property="IsKeyboardFocused" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">

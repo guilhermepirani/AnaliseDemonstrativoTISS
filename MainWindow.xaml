@@ -83,7 +83,7 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                                   Text="Operadora de saúde"
+                                   Text="Operadoras de Saúde"
                                    Style="{StaticResource FieldLabelStyle}" />
 
                         <ComboBox x:Name="OperadoraComboBox"
@@ -117,7 +117,7 @@
                                 Click="SelectXmlFileButton_Click" />
 
                         <TextBlock Grid.Row="4"
-                                   Text="Campo para busca"
+                                   Text="Campo de Busca"
                                    Style="{StaticResource FieldLabelStyle}" />
 
                         <ComboBox x:Name="SearchFieldComboBox"
@@ -128,11 +128,12 @@
                                   Style="{StaticResource InputComboBoxStyle}" />
 
                         <TextBlock Grid.Row="6"
-                                   Text="Dados para filtragem"
+                                   Text="Dados da Busca"
                                    Style="{StaticResource FieldLabelStyle}" />
 
                         <TextBox x:Name="FilterValuesTextBox"
                                  Grid.Row="7"
+                                 Tag="Deixe em branco para buscar tudo"
                                  Margin="0,0,0,10"
                                  AcceptsReturn="True"
                                  TextWrapping="NoWrap"
