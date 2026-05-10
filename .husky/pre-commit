@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo 'Executing Pre-Commit Hook'
+
+dotnet husky run --name build
+
+dotnet husky run --name unit-tests

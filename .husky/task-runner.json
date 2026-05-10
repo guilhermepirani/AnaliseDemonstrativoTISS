@@ -1,0 +1,15 @@
+{
+   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+   "tasks": [
+    {
+      "name": "unit-tests",
+      "command": "dotnet",
+      "args": [ "test", "../AnaliseDemonstrativoTISS.UnitTests/AnaliseDemonstrativoTISS.UnitTests.csproj", "--nologo", "--no-restore", "--verbosity", "q" ]
+    },
+    {
+      "name": "build",
+      "command": "dotnet",
+      "args": [ "build", "../AnaliseDemonstrativoTISS.UnitTests/AnaliseDemonstrativoTISS.UnitTests.csproj", "--nologo", "--verbosity", "q" ]
+    }
+   ]
+}
