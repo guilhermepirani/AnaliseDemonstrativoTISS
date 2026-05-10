@@ -13,6 +13,7 @@ public partial class MainWindow
     private static readonly Dictionary<string, Func<RegistroAnalise, string>> MapeamentoColunas =
         new(StringComparer.Ordinal)
         {
+            [nameof(RegistroAnalise.Arquivo)] = static r => r.Arquivo,
             [nameof(RegistroAnalise.Credencial)] = static r => r.Credencial,
             [nameof(RegistroAnalise.Nome)] = static r => r.Nome,
             [nameof(RegistroAnalise.Senha)] = static r => r.Senha,
@@ -36,29 +37,31 @@ public partial class MainWindow
 
     private static readonly Dictionary<string, int> OrdemColunas = new(StringComparer.Ordinal)
     {
-        [nameof(RegistroAnalise.Credencial)] = 0,
-        [nameof(RegistroAnalise.Nome)] = 1,
-        [nameof(RegistroAnalise.Senha)] = 2,
-        [nameof(RegistroAnalise.NumeroGuiaPrestador)] = 3,
-        [nameof(RegistroAnalise.NumeroGuiaOperadora)] = 4,
-        [nameof(RegistroAnalise.DataAtendimento)] = 5,
-        [nameof(RegistroAnalise.CodigoProcedimento)] = 6,
-        [nameof(RegistroAnalise.DescricaoProcedimento)] = 7,
-        [nameof(RegistroAnalise.Quantidade)] = 8,
-        [nameof(RegistroAnalise.ValorInformado)] = 9,
-        [nameof(RegistroAnalise.ValorProcessado)] = 10,
-        [nameof(RegistroAnalise.ValorLiberado)] = 11,
-        [nameof(RegistroAnalise.ValorGlosa)] = 12,
-        [nameof(RegistroAnalise.CodigoGlosa)] = 13,
-        [nameof(RegistroAnalise.DescricaoGlosa)] = 14,
-        [nameof(RegistroAnalise.SituacaoGuia)] = 15,
-        [nameof(RegistroAnalisePetrobras.TipoPagamento)] = 15,
-        [nameof(RegistroAnaliseAmil.CodigoGlosaAmil)] = 15,
-        [nameof(RegistroAnaliseAmil.DescricaoGlosaAmil)] = 16
+        [nameof(RegistroAnalise.Arquivo)] = 0,
+        [nameof(RegistroAnalise.Credencial)] = 1,
+        [nameof(RegistroAnalise.Nome)] = 2,
+        [nameof(RegistroAnalise.Senha)] = 3,
+        [nameof(RegistroAnalise.NumeroGuiaPrestador)] = 4,
+        [nameof(RegistroAnalise.NumeroGuiaOperadora)] = 5,
+        [nameof(RegistroAnalise.DataAtendimento)] = 6,
+        [nameof(RegistroAnalise.CodigoProcedimento)] = 7,
+        [nameof(RegistroAnalise.DescricaoProcedimento)] = 8,
+        [nameof(RegistroAnalise.Quantidade)] = 9,
+        [nameof(RegistroAnalise.ValorInformado)] = 10,
+        [nameof(RegistroAnalise.ValorProcessado)] = 11,
+        [nameof(RegistroAnalise.ValorLiberado)] = 12,
+        [nameof(RegistroAnalise.ValorGlosa)] = 13,
+        [nameof(RegistroAnalise.CodigoGlosa)] = 14,
+        [nameof(RegistroAnalise.DescricaoGlosa)] = 15,
+        [nameof(RegistroAnalise.SituacaoGuia)] = 16,
+        [nameof(RegistroAnalisePetrobras.TipoPagamento)] = 16,
+        [nameof(RegistroAnaliseAmil.CodigoGlosaAmil)] = 16,
+        [nameof(RegistroAnaliseAmil.DescricaoGlosaAmil)] = 17
     };
 
     private static readonly HashSet<string> ColunasAlinhadasEsquerda =
     [
+        nameof(RegistroAnalise.Arquivo),
         nameof(RegistroAnalise.Nome),
         nameof(RegistroAnalise.DescricaoGlosa),
         nameof(RegistroAnalise.DescricaoProcedimento),

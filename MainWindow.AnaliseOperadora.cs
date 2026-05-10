@@ -34,7 +34,7 @@ public partial class MainWindow
     private readonly Operadoras.Petrobras.AnaliseXml _analisadorPetrobras = new();
     private readonly AnaliseCsv _analisadorAmil = new();
     private readonly Operadoras.CaixaDeCubatao.AnaliseXml _analisadorCaixaCubatao = new();
-    private string _arquivoSelecionado = string.Empty;
+    private IReadOnlyList<string> _arquivosSelecionados = [];
 
     private void OperadoraComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -51,7 +51,7 @@ public partial class MainWindow
             Title = usaCsv ? "Selecione um arquivo CSV" : "Selecione um arquivo XML TISS",
             Filter = usaCsv ? CsvDialogFilter : XmlDialogFilter,
             CheckFileExists = true,
-            Multiselect = false
+            Multiselect = true
         };
 
         if (dialog.ShowDialog(this) != true)
@@ -59,8 +59,8 @@ public partial class MainWindow
             return;
         }
 
-        _arquivoSelecionado = dialog.FileName;
-        SelectXmlFileButton.Content = Path.GetFileName(dialog.FileName);
+        _arquivosSelecionados = dialog.FileNames;
+        SelectXmlFileButton.Content = ObterDescricaoArquivosSelecionados(_arquivosSelecionados);
         SelectXmlFileButton.Style = (Style)FindResource("FileSelectedButtonStyle");
     }
 
@@ -75,7 +75,7 @@ public partial class MainWindow
         {
             var operadora = ObterConteudoSelecionado(OperadoraComboBox);
             var valoresFiltro = ObterValoresFiltro();
-            var resultado = ExecutarAnalisePorOperadora(operadora, valoresFiltro);
+            var resultado = ExecutarAnalisePorOperadora(operadora, valoresFiltro, _arquivosSelecionados);
 
             _ultimoResultado = resultado;
             ResultDataGrid.ItemsSource = resultado;
@@ -88,12 +88,12 @@ public partial class MainWindow
 
     private bool ArquivoSelecionadoValido()
     {
-        if (!string.IsNullOrWhiteSpace(_arquivoSelecionado))
+        if (_arquivosSelecionados.Count > 0)
         {
             return true;
         }
 
-        MessageBox.Show(this, "Selecione um arquivo antes de executar a busca.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+        MessageBox.Show(this, "Selecione ao menos um arquivo antes de executar a busca.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
         return false;
     }
 
@@ -105,29 +105,64 @@ public partial class MainWindow
             .Where(valor => !string.IsNullOrWhiteSpace(valor));
     }
 
-    private IReadOnlyList<RegistroAnalise> ExecutarAnalisePorOperadora(string operadora, IEnumerable<string> valoresFiltro)
+    private IReadOnlyList<RegistroAnalise> ExecutarAnalisePorOperadora(string operadora, IEnumerable<string> valoresFiltro, IReadOnlyList<string> arquivos)
+    {
+        var resultadoConsolidado = new List<RegistroAnalise>();
+        var exibirNomeArquivo = arquivos.Count > 1;
+
+        foreach (var arquivo in arquivos)
+        {
+            var resultadoArquivo = ExecutarAnaliseArquivo(operadora, valoresFiltro, arquivo);
+            var nomeArquivo = exibirNomeArquivo ? Path.GetFileName(arquivo) : string.Empty;
+
+            foreach (var registro in resultadoArquivo)
+            {
+                registro.Arquivo = nomeArquivo;
+                resultadoConsolidado.Add(registro);
+            }
+        }
+
+        return resultadoConsolidado;
+    }
+
+    private IReadOnlyList<RegistroAnalise> ExecutarAnaliseArquivo(string operadora, IEnumerable<string> valoresFiltro, string arquivo)
     {
         if (string.Equals(operadora, OperadoraSulamerica, StringComparison.OrdinalIgnoreCase))
         {
-            return _analisadorSulamerica.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroSulamerica.Credencial), valoresFiltro);
+            return _analisadorSulamerica.Analisar(arquivo, ObterCampoFiltro(CampoFiltroSulamerica.Credencial), valoresFiltro);
         }
 
         if (string.Equals(operadora, OperadoraPetrobras, StringComparison.OrdinalIgnoreCase))
         {
-            return _analisadorPetrobras.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroPetrobras.NumeroGuiaPrestador), valoresFiltro);
+            return _analisadorPetrobras.Analisar(arquivo, ObterCampoFiltro(CampoFiltroPetrobras.NumeroGuiaPrestador), valoresFiltro);
         }
 
         if (string.Equals(operadora, OperadoraAmil, StringComparison.OrdinalIgnoreCase))
         {
-            return _analisadorAmil.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroAmil.Credencial), valoresFiltro);
+            return _analisadorAmil.Analisar(arquivo, ObterCampoFiltro(CampoFiltroAmil.Credencial), valoresFiltro);
         }
 
         if (string.Equals(operadora, OperadoraCaixaCubatao, StringComparison.OrdinalIgnoreCase))
         {
-            return _analisadorCaixaCubatao.Analisar(_arquivoSelecionado, ObterCampoFiltro(CampoFiltroCaixaCubatao.Credencial), valoresFiltro);
+            return _analisadorCaixaCubatao.Analisar(arquivo, ObterCampoFiltro(CampoFiltroCaixaCubatao.Credencial), valoresFiltro);
         }
 
         throw new NotSupportedException($"A análise está disponível no momento apenas para as operadoras {OperadoraSulamerica}, {OperadoraPetrobras}, {OperadoraAmil} e {OperadoraCaixaCubatao}.");
+    }
+
+    private static string ObterDescricaoArquivosSelecionados(IReadOnlyList<string> arquivosSelecionados)
+    {
+        if (arquivosSelecionados.Count == 0)
+        {
+            return "Selecionar arquivo";
+        }
+
+        var primeiroArquivo = Path.GetFileName(arquivosSelecionados[0]);
+        var quantidadeArquivosExtras = arquivosSelecionados.Count - 1;
+
+        return quantidadeArquivosExtras > 0
+            ? $"{primeiroArquivo} +{quantidadeArquivosExtras}"
+            : primeiroArquivo;
     }
 
     private bool UsaCsv(string operadora)
